@@ -1,17 +1,19 @@
 import express from "express"
-
-import { register } from "./router/register"
 import bodyParser from "body-parser"
+
+import { Register } from "./router/register"
+import { Login } from "./router/login"
 
 const app = express()
 
 app.use(bodyParser.json())
 
-// app.get("/", function (req, res) {
-//   res.send("hello world")
-// })
+app.get("/", function (req, res) {
+  res.send("hello world")
+})
 
-app.post("/register", register)
+app.post("/login", Login)
+app.post("/register", Register)
 
 const start = async () => {
   try {

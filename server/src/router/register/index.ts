@@ -1,21 +1,21 @@
 import { Request, Response } from "express"
 import { connectionDB } from "../../../database/db"
 
-export interface Body {
+interface Body {
   name: string
   email: string
   password: string
 }
 
 interface Results {
-  map(arg0: (item: { email: [] }) => []): []
+  length: number
 }
 
-export function register(req: Request, res: Response) {
+export function Register(req: Request, res: Response) {
   const { name, email, password } = req.body as Body
 
   connectionDB.query(
-    "SELECT * FROM users",
+    `SELECT email FROM users WHERE email = '${email}'`,
     (error: Error, results: Results, fields) => {
       if (error) {
         throw error
@@ -36,11 +36,7 @@ export function register(req: Request, res: Response) {
         return
       }
 
-      const list = results.map((item) => item.email)
-
-      const emailExisting = list.some((item) => item === email)
-
-      if (emailExisting) {
+      if (results.length > 0) {
         res.status(400).send({ message: "Email already exists" })
       } else {
         connectionDB.query(
