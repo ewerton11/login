@@ -7,49 +7,36 @@ interface Body {
   password: string
 }
 
-interface Results {
-  length: number
-}
-
 export function Register(req: Request, res: Response) {
   const { name, email, password } = req.body as Body
 
-  connectionDB.query(
-    `SELECT email FROM users WHERE email = '${email}'`,
-    (error: Error, results: Results, fields) => {
-      if (error) {
-        throw error
-      }
+  const query = "SELECT email FROM users WHERE email = ?"
+  const queryInsert = "INSERT INTO users SET ?"
 
-      if (!name) {
-        res.status(400).send({ message: "invalid name" })
-        return
-      }
-
-      if (!email) {
-        res.status(400).send({ message: "invalid email" })
-        return
-      }
-
-      if (!password) {
-        res.status(400).send({ message: "invalid password" })
-        return
-      }
-
-      if (results.length > 0) {
-        res.status(400).send({ message: "Email already exists" })
-      } else {
-        connectionDB.query(
-          "INSERT INTO users SET ?",
-          { name, email, password },
-          (insertError, insertResults) => {
-            if (insertError) {
-              throw insertError
-            }
-            res.send({ message: "Email added successfully" })
-          }
-        )
-      }
+  connectionDB.query(query, email, (error, results) => {
+    if (error) {
+      throw error
     }
-  )
+
+    if (!name || !email || !password) {
+      return res
+        .status(400)
+        .send({ message: "invalid name, email or password" })
+    }
+
+    if (results.length > 0) {
+      return res.status(400).send({ message: "Email already exists" })
+    } else {
+      connectionDB.query(
+        queryInsert,
+        { name, email, password },
+        (insertError) => {
+          if (insertError) {
+            throw insertError
+          }
+          return res.send({ message: "Email added successfully" })
+        }
+      )
+    }
+  })
 }
