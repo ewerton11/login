@@ -9,43 +9,38 @@ interface Body {
   token: string
 }
 
-interface Results {
-  length: number
-}
+export async function Login(req: Request, res: Response) {
+  try {
+    const { email, password } = req.body as Body
 
-export function Login(req: Request, res: Response) {
-  const { email, password } = req.body as Body
+    if (!email || !password) {
+      return res.status(400).send({ message: "Invalid email or password" })
+    }
 
-  connectionDB.query(
-    `SELECT * FROM users WHERE email = '${email}' AND password = '${password}'`,
-    (error, results: Results, fields) => {
+    const query = "SELECT * FROM users WHERE email = ? AND password = ?"
+
+    connectionDB.query(query, [email, password], (error, results) => {
       if (error) {
         throw error
       }
 
-      if (!email) {
-        res.status(400).send({ message: "invalid email" })
-        return
-      }
-
-      if (!password) {
-        res.status(400).send({ message: "invalid password" })
-        return
-      }
-
-      const token = jwt.sign(
-        { id: results[0].id, email: results[0].email },
-        "secret",
-        { expiresIn: "1d" }
-      )
-
       if (results.length > 0) {
-        res.status(200).send({ email, token })
-      } else {
-        console.log("email inexistente")
-      }
-    }
-  )
+        const token = jwt.sign(
+          { id: results[0].id, email: results[0].email },
+          // process.env.JWT_SECRET,
+          "secret",
+          { expiresIn: "1d" }
+        )
 
-  connectionDB.end()
+        return res.status(200).send({ email, token })
+      } else {
+        return res
+          .status(401)
+          .send({ message: "Email or password is incorrect" })
+      }
+    })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send({ message: "Internal Server Error" })
+  }
 }
