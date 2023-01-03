@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import jwt from "jsonwebtoken"
 
-import { connectionDB } from "../../../database/db"
+import { connectionDB } from "../../database/db"
 
 interface Body {
   email: string

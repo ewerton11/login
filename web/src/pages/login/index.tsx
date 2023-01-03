@@ -1,9 +1,12 @@
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useForm } from "react-hook-form"
+import Link from "next/link"
+import { useContext } from "react"
 
-import { api } from "../../lib/axios"
-import style from "../../styles/login/style.module.css"
+import styleForm from "../../styles/register/style.module.css"
+import { AuthContext, AuthProvaider } from "context/auth/authContext"
+import { RequireAuth } from "context/auth/requireAuth"
 
 interface Login {
   email: string
@@ -18,6 +21,8 @@ const schema = yup
   .required()
 
 export default function Login() {
+  const auth = useContext(AuthContext)
+
   const {
     register,
     handleSubmit,
@@ -27,42 +32,48 @@ export default function Login() {
   })
 
   async function Submit(data: Login) {
-    try {
-      const { email, password } = data
-      const response = await api.post("/login", { email, password })
-    } catch (error) {
-      console.error(error)
-    }
+    auth?.sigin(data.email, data.password)
   }
 
   return (
-    <div className={style.div}>
-      <form onSubmit={handleSubmit(Submit)} className={style.form}>
-        <div className={style.containerEmail}>
-          <div className={style.divInput}>
-            <input
-              {...register("email")}
-              type="email"
-              placeholder="Seu email"
-              className={style.input}
-            />
+    <div className={styleForm.div}>
+      <form onSubmit={handleSubmit(Submit)} className={styleForm.form}>
+        <div className={styleForm.containerForm}>
+          <div className={styleForm.containerInput}>
+            <h3 className={styleForm.name}>email</h3>
+            <div className={styleForm.divInput}>
+              <input
+                {...register("email")}
+                type="email"
+                placeholder="seu email"
+                className={styleForm.input}
+              />
+            </div>
+            <span className={styleForm.span}>{errors.email?.message}</span>
           </div>
-          <span className={style.span}>{errors.email?.message}</span>
-        </div>
-        <div className={style.containerPassword}>
-          <div className={style.divInput}>
-            <input
-              {...register("password")}
-              type="password"
-              placeholder="Sua senha"
-              className={style.input}
-            />
+          <div className={styleForm.containerInput}>
+            <h3 className={styleForm.name}>senha</h3>
+            <div className={styleForm.divInput}>
+              <input
+                {...register("password")}
+                type="password"
+                placeholder="sua senha"
+                className={styleForm.input}
+              />
+            </div>
+            <span className={styleForm.span}>{errors.password?.message}</span>
           </div>
-          <span className={style.span}>{errors.password?.message}</span>
         </div>
-        <button className={style.button} type="submit">
-          confirmar
-        </button>
+        <div className={styleForm.divButton}>
+          <button className={styleForm.button} type="submit">
+            confirmar
+          </button>
+        </div>
+        <div className={styleForm.containerLinks}>
+          <div className={styleForm.linkForm}>
+            <Link href={"/register"}>cadastrar</Link>
+          </div>
+        </div>
       </form>
     </div>
   )

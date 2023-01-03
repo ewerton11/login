@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { connectionDB } from "../../../database/db"
+import { connectionDB } from "../../database/db"
 
 interface Body {
   name: string
