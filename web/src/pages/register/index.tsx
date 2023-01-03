@@ -1,12 +1,15 @@
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useForm } from "react-hook-form"
+import { useContext } from "react"
+import Link from "next/link"
 
 import { api } from "../../lib/axios"
 import style from "../../styles/register/style.module.css"
+import { RequireAuth } from "context/auth/requireAuth"
 
 interface Register {
-  user: string
+  name: string
   email: string
   password: string
   confirmPassword: string
@@ -14,7 +17,7 @@ interface Register {
 
 const schema = yup
   .object({
-    user: yup.string().required("Name obrigatorio"),
+    name: yup.string().required("Nome obrigatorio"),
     email: yup.string().required("Email obrigatorio"),
     password: yup.string().required("Senha obrigatoria"),
     confirmPassword: yup.string().required("Confirme sua senha"),
@@ -32,8 +35,8 @@ export default function Register() {
 
   async function Submit(data: Register) {
     try {
-      const { user, email, password } = data
-      const response = await api.post("/register", { user, email, password })
+      const { name, email, password } = data
+      const response = await api.post("/register", { name, email, password })
     } catch (error) {
       console.error(error)
     }
@@ -47,14 +50,14 @@ export default function Register() {
             <h3 className={style.name}>nome*</h3>
             <div className={style.divInput}>
               <input
-                {...register("user")}
+                {...register("name")}
                 type="text"
                 minLength={2}
                 placeholder="seu nome"
                 className={style.input}
               />
             </div>
-            <span className={style.span}>{errors.user?.message}</span>
+            <span className={style.span}>{errors.name?.message}</span>
           </div>
           <div className={style.containerInput}>
             <h3 className={style.name}>email*</h3>
@@ -99,6 +102,11 @@ export default function Register() {
           <button className={style.button} type="submit">
             confirmar
           </button>
+        </div>
+        <div className={style.containerLinks}>
+          <div className={style.linkForm}>
+            <Link href={"/login"}>entrar</Link>
+          </div>
         </div>
       </form>
     </div>
