@@ -4,6 +4,7 @@ import cors from "cors"
 
 import { Register } from "./router/register"
 import { Login } from "./router/login"
+import { ValidateToken } from "./router/validateToken"
 
 const app = express()
 
@@ -23,6 +24,7 @@ app.get("/", function (req, res) {
 
 app.post("/login", Login)
 app.post("/register", Register)
+app.post("/Validatetoken", ValidateToken)
 
 const start = async () => {
   try {
