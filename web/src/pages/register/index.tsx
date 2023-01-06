@@ -1,28 +1,27 @@
-import * as yup from "yup"
+import * as Yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useForm } from "react-hook-form"
-import { useContext } from "react"
 import Link from "next/link"
 
 import { api } from "../../lib/axios"
 import style from "../../styles/register/style.module.css"
-import { RequireAuth } from "context/auth/requireAuth"
 
 interface Register {
   name: string
   email: string
   password: string
-  confirmPassword: string
+  passwordConfirmation: string
 }
 
-const schema = yup
-  .object({
-    name: yup.string().required("Nome obrigatorio"),
-    email: yup.string().required("Email obrigatorio"),
-    password: yup.string().required("Senha obrigatoria"),
-    confirmPassword: yup.string().required("Confirme sua senha"),
-  })
-  .required()
+const schema = Yup.object().shape({
+  name: Yup.string().required("Nome obrigatório"),
+  email: Yup.string().required("Email obrigatório"),
+  password: Yup.string().required("Senha obrigatória"),
+  passwordConfirmation: Yup.string().oneOf(
+    [Yup.ref('password')],
+    'As senhas devem ser iguais'
+  ),
+}).required("Todos os campos são obrigatórios");
 
 export default function Register() {
   const {
@@ -87,14 +86,14 @@ export default function Register() {
             <h3 className={style.name}>senha*</h3>
             <div className={style.divInput}>
               <input
-                {...register("confirmPassword")}
+                {...register("passwordConfirmation")}
                 type="password"
                 placeholder="Confirme a senha"
                 className={style.input}
               />
             </div>
             <span className={style.span}>
-              {errors.confirmPassword?.message}
+              {errors.passwordConfirmation?.message}
             </span>
           </div>
         </div>
