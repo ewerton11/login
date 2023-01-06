@@ -10,7 +10,7 @@ interface Data {
 
 type ContextType = {
   data: Data | null
-  sigin: (email: string, token: string) => void
+  signin: (email: string, token: string) => void
 }
 
 export const AuthContext = createContext<ContextType | null>(null)
@@ -24,14 +24,15 @@ export const AuthProvaider = (props: PropsWithChildren) => {
       const storageToken = localStorage.getItem('token')
 
       if (storageToken) {
-        const validateToken = await api.post('/validatetoken', { storageToken })
-        setData(validateToken)
+        const { data } = await api.post('/validatetoken', { storageToken })
+
+        setData(data)
       }
     }
     validate()
   }, [])
 
-  const sigin = async (email: string, password: string) => {
+  const signin = async (email: string, password: string) => {
     try {
       const { data } = await api.post('/login', { email, password })
 
@@ -39,11 +40,15 @@ export const AuthProvaider = (props: PropsWithChildren) => {
       setData(data)
       router.push('/')
     } catch (error) {
-      console.error(error)
+      if (error.response.status === 401) {
+        return alert(error.response.data.message)
+      }
     }
   }
 
   return (
-    <AuthContext.Provider value={{ data, sigin }}>{props.children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ data, signin }}>
+      {props.children}
+    </AuthContext.Provider>
   )
 }

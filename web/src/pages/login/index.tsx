@@ -1,12 +1,11 @@
-import * as yup from "yup"
-import { yupResolver } from "@hookform/resolvers/yup"
-import { useForm } from "react-hook-form"
-import Link from "next/link"
-import { useContext } from "react"
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
+import Link from 'next/link'
+import { useContext } from 'react'
 
-import styleForm from "../../styles/register/style.module.css"
-import { AuthContext, AuthProvaider } from "context/auth/authContext"
-import { RequireAuth } from "context/auth/requireAuth"
+import styleForm from '../../styles/register/style.module.css'
+import { AuthContext } from 'context/auth/authContext'
 
 interface Login {
   email: string
@@ -15,8 +14,8 @@ interface Login {
 
 const schema = yup
   .object({
-    email: yup.string().required("Email obrigatorio"),
-    password: yup.string().required("Senha obrigatoria"),
+    email: yup.string().required('Email obrigatorio'),
+    password: yup.string().required('Senha obrigatoria'),
   })
   .required()
 
@@ -32,7 +31,7 @@ export default function Login() {
   })
 
   async function Submit(data: Login) {
-    auth?.sigin(data.email, data.password)
+    auth?.signin(data.email, data.password)
   }
 
   return (
@@ -43,7 +42,7 @@ export default function Login() {
             <h3 className={styleForm.name}>email</h3>
             <div className={styleForm.divInput}>
               <input
-                {...register("email")}
+                {...register('email')}
                 type="email"
                 placeholder="seu email"
                 className={styleForm.input}
@@ -55,7 +54,7 @@ export default function Login() {
             <h3 className={styleForm.name}>senha</h3>
             <div className={styleForm.divInput}>
               <input
-                {...register("password")}
+                {...register('password')}
                 type="password"
                 placeholder="sua senha"
                 className={styleForm.input}
@@ -71,7 +70,7 @@ export default function Login() {
         </div>
         <div className={styleForm.containerLinks}>
           <div className={styleForm.linkForm}>
-            <Link href={"/register"}>cadastrar</Link>
+            <Link href={'/register'}>cadastrar</Link>
           </div>
         </div>
       </form>

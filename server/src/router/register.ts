@@ -1,5 +1,5 @@
-import { Request, Response } from "express"
-import { connectionDB } from "../../database/db"
+import { Request, Response } from 'express'
+import { connectionDB } from '../../database/db'
 
 interface Body {
   name: string
@@ -10,10 +10,10 @@ interface Body {
 export function Register(req: Request, res: Response) {
   const { name, email, password } = req.body as Body
 
-  const query = "SELECT email FROM users WHERE email = ?"
-  const queryInsert = "INSERT INTO users SET ?"
+  const query = 'SELECT email FROM users WHERE email = ?'
+  const queryInsert = 'INSERT INTO users SET ?'
 
-  connectionDB.query(query, email, (error, results) => {
+  connectionDB.query(query, email, (error, results: Array<any>) => {
     if (error) {
       throw error
     }
@@ -21,11 +21,11 @@ export function Register(req: Request, res: Response) {
     if (!name || !email || !password) {
       return res
         .status(400)
-        .send({ message: "invalid name, email or password" })
+        .send({ message: 'invalid name, email or password' })
     }
 
     if (results.length > 0) {
-      return res.status(400).send({ message: "Email already exists" })
+      return res.status(400).send({ message: 'Email already exists' })
     } else {
       connectionDB.query(
         queryInsert,
@@ -34,7 +34,7 @@ export function Register(req: Request, res: Response) {
           if (insertError) {
             throw insertError
           }
-          return res.send({ message: "Email added successfully" })
+          return res.send({ message: 'Email added successfully' })
         }
       )
     }

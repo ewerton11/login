@@ -9,6 +9,13 @@ interface Body {
   token: string
 }
 
+// interface Results {
+//   id: number
+//   name: string
+//   email: string
+//   password: string
+// }
+
 export async function Login(req: Request, res: Response) {
   try {
     const { email, password } = req.body as Body
@@ -19,24 +26,30 @@ export async function Login(req: Request, res: Response) {
 
     const query = 'SELECT * FROM users WHERE email = ? AND password = ?'
 
-    connectionDB.query(query, [email, password], (error, results) => {
-      if (error) {
-        throw error
-      }
+    connectionDB.query(
+      query,
+      [email, password],
+      (error, results: Array<any>) => {
+        if (error) {
+          throw error
+        }
 
-      if (results.length > 0) {
-        const token = jwt.sign(
-          { id: results[0].id, email: results[0].email },
-          // process.env.JWT_SECRET,
-          'secret',
-          { expiresIn: '1d' }
-        )
+        if (results.length > 0) {
+          const token = jwt.sign(
+            { id: results[0].id, email: results[0].email },
+            // process.env.JWT_SECRET,
+            'secret',
+            { expiresIn: '1d' }
+          )
 
-        return res.status(200).send({ email, token })
-      } else {
-        return res.status(401).send({ message: 'Email or password is incorrect' })
+          return res.status(200).send({ email, token })
+        } else {
+          return res
+            .status(401)
+            .send({ message: 'Email or password is incorrect' })
+        }
       }
-    })
+    )
   } catch (error) {
     console.error(error)
     return res.status(500).send({ message: 'Internal Server Error' })
