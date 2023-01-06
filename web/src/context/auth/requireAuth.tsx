@@ -1,7 +1,6 @@
-import Login from "pages/login"
-import Register from "pages/register"
-import { useContext } from "react"
-import { AuthContext } from "./authContext"
+import Login from 'pages/login'
+import { useContext } from 'react'
+import { AuthContext } from './authContext'
 
 type Props = {
   children: JSX.Element

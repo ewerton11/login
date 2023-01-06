@@ -1,10 +1,10 @@
-import * as Yup from "yup"
-import { yupResolver } from "@hookform/resolvers/yup"
-import { useForm } from "react-hook-form"
-import Link from "next/link"
+import * as Yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useForm } from 'react-hook-form'
+import Link from 'next/link'
 
-import { api } from "../../lib/axios"
-import style from "../../styles/register/style.module.css"
+import { api } from '../../lib/axios'
+import style from '../../styles/register/style.module.css'
 
 interface Register {
   name: string
@@ -13,15 +13,17 @@ interface Register {
   passwordConfirmation: string
 }
 
-const schema = Yup.object().shape({
-  name: Yup.string().required("Nome obrigatório"),
-  email: Yup.string().required("Email obrigatório"),
-  password: Yup.string().required("Senha obrigatória"),
-  passwordConfirmation: Yup.string().oneOf(
-    [Yup.ref('password')],
-    'As senhas devem ser iguais'
-  ),
-}).required("Todos os campos são obrigatórios");
+const schema = Yup.object()
+  .shape({
+    name: Yup.string().required('Nome obrigatório'),
+    email: Yup.string().required('Email obrigatório'),
+    password: Yup.string().required('Senha obrigatória'),
+    passwordConfirmation: Yup.string().oneOf(
+      [Yup.ref('password')],
+      'As senhas devem ser iguais'
+    ),
+  })
+  .required('Todos os campos são obrigatórios')
 
 export default function Register() {
   const {
@@ -35,7 +37,7 @@ export default function Register() {
   async function Submit(data: Register) {
     try {
       const { name, email, password } = data
-      const response = await api.post("/register", { name, email, password })
+      const response = await api.post('/register', { name, email, password })
     } catch (error) {
       console.error(error)
     }
@@ -49,7 +51,7 @@ export default function Register() {
             <h3 className={style.name}>nome*</h3>
             <div className={style.divInput}>
               <input
-                {...register("name")}
+                {...register('name')}
                 type="text"
                 minLength={2}
                 placeholder="seu nome"
@@ -62,7 +64,7 @@ export default function Register() {
             <h3 className={style.name}>email*</h3>
             <div className={style.divInput}>
               <input
-                {...register("email")}
+                {...register('email')}
                 type="email"
                 placeholder="seu email"
                 className={style.input}
@@ -74,7 +76,7 @@ export default function Register() {
             <h3 className={style.name}>senha*</h3>
             <div className={style.divInput}>
               <input
-                {...register("password")}
+                {...register('password')}
                 type="password"
                 placeholder="sua senha"
                 className={style.input}
@@ -86,7 +88,7 @@ export default function Register() {
             <h3 className={style.name}>senha*</h3>
             <div className={style.divInput}>
               <input
-                {...register("passwordConfirmation")}
+                {...register('passwordConfirmation')}
                 type="password"
                 placeholder="Confirme a senha"
                 className={style.input}
@@ -104,7 +106,7 @@ export default function Register() {
         </div>
         <div className={style.containerLinks}>
           <div className={style.linkForm}>
-            <Link href={"/login"}>entrar</Link>
+            <Link href={'/login'}>entrar</Link>
           </div>
         </div>
       </form>
